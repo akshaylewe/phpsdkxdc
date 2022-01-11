@@ -1,5 +1,5 @@
 {
-    "name": "php/sdkxdc",
+    "name": "phps/sdkxdc",
     "description": "This library provides calling function of every methods of XRC20 and XRC721.",
     "type": "library",
     "authors": [{
@@ -8,7 +8,7 @@
     }],
     "autoload": {
         "psr-4": {
-            "PHP\\SDKXDC\\": "src"
+            "PHPS\\SDKXDC\\": "src"
         }
     },
     "minimum-stability": "dev",
