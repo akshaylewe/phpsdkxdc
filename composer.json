@@ -1,0 +1,20 @@
+{
+    "name": "phpsdk/xdc",
+    "description": "This library provides calling function of every methods.",
+    "type": "library",
+    "authors": [{
+        "name": "Foundation",
+        "email": "foundation@leewayhertz.com"
+    }],
+    "autoload": {
+        "psr-4": {
+            "PHPSDK\\XDC\\": "src"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {
+       
+        "xdc/php": "1.1"
+       
+    }
+}
