@@ -8,7 +8,7 @@ require "vendor/autoload.php";
 include "src/common/constant.php";
 include "src/modules/xrc20/xrc20Sdk.php";
 include "src/modules/xrc721/xrc721Sdk.php";
-include "vendor/PHPSDK/XDC/src/config/env.php";
+include "vendor/PHP/SDKXDC/src/config/env.php";
 include "vendor/XDC/PHP/src/Token721.php";
 include "vendor/XDC/PHP/src/Token20.php";
 
