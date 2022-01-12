@@ -11,10 +11,8 @@ use web3\token\token20;
 class XRC20SDK {
 
     /**
-     * Function For Making a Connection with xdc apotheum testnet.
-     * $Contract address input given by console.
-     * Apotheum address is constant fetching from constant.php file.
-     * Return connection object.
+     * @dev Gets the Connection from XDC.
+     * @param tokenAddress The address of the token.
      */
     public function xdcConnection($contractAddress){
         $apothemAddress = getenv('URL');
@@ -22,9 +20,12 @@ class XRC20SDK {
         return $xdcConnection ;
     }
     
+ //-------------------------------------READ OPERATIONS-----------------------------------------//
+
     /**
-     * getName method
-     * By this method we can get name of a token. ---e.g. "XDC_Demo"
+     * @dev Gets the Name of the specified address.
+     * @param tokenAddress The address of the token.
+     * @return an String representing the Name owned by the passed address.
      */
     public function getName($contractAddress){
         $xdc = $this->xdcConnection($contractAddress);
@@ -32,9 +33,10 @@ class XRC20SDK {
         echo "Name of token: $name \n";
     }
 
-    /**
-     * getDecimal method
-     * By this Method we can get decimals of a token.--e.g. "18"
+     /**
+     * @dev Gets the Decimal of the specified address.
+     * @param tokenAddress The address of the token.
+     * @return an String representing the Decimal owned by the passed address.
      */
     public function getDecimal($contractAddress){
         $xdc = $this->xdcConnection($contractAddress);
@@ -43,9 +45,10 @@ class XRC20SDK {
     }
 
     /**
-     * getSymboll method
-     * By this Method we can get Symbol of a token.--e.g. "XDC"
-     */
+    *  @dev Gets the Symbol of the specified address.
+    * @param tokenAddress The address of the token.
+    * @return an String representing  the symbol of the token.
+    */
     public function getSymbol($contractAddress){
         $xdc = $this->xdcConnection($contractAddress);
         $symbol = $xdc->symbol();
@@ -53,8 +56,9 @@ class XRC20SDK {
     }
 
     /**
-     * getTotalSupply method
-     * By this method we can get totalSupply of a token. ----e.g. "10000000"
+     * @dev Gets the Totalsupply of the specified address.
+     * @param tokenAddress The address of the token.
+     * @return an String representing the Totalsupply owned by the passed address.
      */
     public function getTotalSupply($contractAddress){
         $xdc = $this->xdcConnection($contractAddress);
@@ -62,12 +66,12 @@ class XRC20SDK {
         echo "Totalsupply of token: $totalSupply \n";
     }
 
-
     /**
-     * getAllowance method
-     * By this method we can get how much allowance spender have from owner
-     * Owneraddress & Spender address input given by console.
-     * Return allowance
+     * @dev Gets how much allowance spender have from owner
+     * @param tokenAddress The address of the token.
+	 * @param ownerAddress The address of the Token's owner.
+	 * @param spenderAddress The address of the Spender's address.
+     * @return an String representing the Allowance .
      */
     public function getAllowance($contractAddress,$ownerAddress,$spenderAddress){
         $xdc = $this->xdcConnection($contractAddress);
@@ -76,10 +80,10 @@ class XRC20SDK {
     }
 
     /**
-     * getBalanceOf method
-     * By this method we can get how much token balance particular admin have.
-     * Admin address input given by console.
-     * Return tokenBalance of Admin
+     * @dev Gets the balance of the specified address.
+     * @param tokenAddress The address of the token.
+     * @param ownerAddress The address to query the balance of.
+     * @return an String representing the amount owned by the passed address.
      */
     public function getBalanceOf($contractAddress,$ownerAddress){
         $xdc = $this->xdcConnection($contractAddress);
@@ -88,15 +92,19 @@ class XRC20SDK {
     }
 
 
-    // /**
-    //  * getApprove method
-    //  * By this method we can give permisson to use token balance to the spender from owner.
-    //  * Tokenamount input given by console.
-    //  * Owner address input given by console.
-    //  * Owner address privatekey input given by console.
-    //  * Spender address input given by console.
-    //  * Return hash value.
-    //  */
+//-------------------------------------WRITE OPERATIONS---------------------------------------//
+
+    /**
+	 * @dev Approve the passed address to spend the specified amount of tokens on behalf of owner.
+     * Beware that changing an allowance with this method brings the risk that someone may use both the old
+     * and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this
+     * race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards:
+     * @param tokenAddress ContractAddress.
+     * @param ownerAddress Token Owner Address.
+     * @param ownerPrivateKey Owner Private key.
+	 * @param spenderAddress The address which will spend the funds.
+	 * @param tokenValue The amount of tokens to be spent.
+     */
     public function getApprove(string $contractAddress,string $ownerAddress, $ownerPrivateKey,string $spenderAddress,float $tokenAmount){
         $xdc = $this->xdcConnection($contractAddress);
         $balance = $xdc->balanceOf($ownerAddress);
@@ -104,23 +112,20 @@ class XRC20SDK {
             $approveTransaction = $xdc->approve($ownerAddress,$spenderAddress, $tokenAmount);
             $approveTransactionId = $approveTransaction->sign($ownerPrivateKey)->send();
             echo "Permission granted to this account ( $spenderAddress ) to use upto $tokenAmount tokens from this account( $ownerAddress ). Approval id is: $approveTransactionId \n";
-            // return $approveTransactionId;
-            echo $ownerPrivateKey;
-            echo gettype($ownerPrivateKey);
         }else{
             echo "Insufficient balance in this token. Your current token balance is: $balance \n";
         }
     }
 
-    // /**
-    //  * decreaseAllowance method.
-    //  * By this method we can decrease allowance to the spender from owner.
-    //  * Tokenamount input given by console.
-    //  * Owner address input given by console.
-    //  * Owner address privatekey input given by console.
-    //  * Spender address input given by console.
-    //  * Return hash value
-    //  */
+      /**
+     * @dev decrease the amount of tokens that an owner allowed to a spender.
+     * approve should be called when allowed_[_spender] == 0. 
+	 * @param tokenAddress Token Address for which , allownce need to to decrease.
+     * @param ownerAddress Owner Address
+     * @param ownerPrivateKey Owner Private key
+     * @param spenderAddress The address which will spend the funds.
+     * @param tokenValue The amount of tokens to increase the allowance by.
+     */
     public function decreaseAllowance(string $contractAddress,string $ownerAddress,string $ownerPrivateKey,string $spenderAddress,float $tokenAmount){
         $xdc = $this->xdcConnection($contractAddress);
         $allowance = $xdc->allowance($ownerAddress,$spenderAddress);
@@ -133,16 +138,15 @@ class XRC20SDK {
         }
     }
 
-
-    // /**
-    //  * increaseAllowance method.
-    //  * By this method we can increase allowance to the spender from owner.
-    //  * Tokenamount input given by console.
-    //  * Owner address input given by console.
-    //  * Owner address privatekey input given by console.
-    //  * Spender address input given by console.
-    //  * Return hash value.
-    //  */
+    /**
+     * @dev increase the amount of tokens that an owner allowed to a spender.
+     * approve should be called when allowed_[_spender] == 0. 
+	 * @param tokenAddress Token Address for which , allownce need to to increase.
+     * @param ownerAddress Owner Address
+     * @param ownerPrivateKey Owner Private key
+     * @param spenderAddress The address which will spend the funds.
+     * @param tokenValue The amount of tokens to decrease the allowance by.
+     */
     public function increaseAllowance(string $contractAddress,string $ownerAddress,string $ownerPrivateKey,string $spenderAddress,float $tokenAmount){
         $xdc = $this->xdcConnection($contractAddress);
         $balance = $xdc->balanceOf($ownerAddress);
@@ -156,16 +160,15 @@ class XRC20SDK {
         }
     }
 
-    // /**
-    //  * transferFrom method.
-    //  * By this method we can transfer token from spender to others behalf of owner.
-    //  * Tokenamount input given by console.
-    //  * Owner address input given by console.
-    //  * Spender address input given by console.
-    //  * Spender address privatekey input given by console.
-    //  * To address input given by console.
-    //  * Return hash value.
-    //  */
+     /**
+     * @dev Transfer tokens from one address to another
+     * @param tokenAddress Token Address.
+     * @param ownerAddress Token Owner Address.
+	 * @param spenderAddress Spender Address is The address which you want to send tokens from.
+	 * @param spenderPrivateKey Spender's Private key.
+     * @param recieverAddress Reciever Address is The address which you want to transfer to.
+     * @param tokenValue the amount of tokens to be transferred
+     */
     public function transferFrom(string $contractAddress,string $ownerAddress,string $spenderAddress,string $spenderPrivateKey,string $recieverAddress,float $tokenAmount){
         $xdc = $this->xdcConnection($contractAddress);
         $allowance = $xdc->allowance($ownerAddress,$spenderAddress);
@@ -178,15 +181,14 @@ class XRC20SDK {
         }
     }
 
-    // /**
-    //  * transferToken method.
-    //  * By this method we can transfer token from one address to others.
-    //  * Token amount input given by console.
-    //  * From address input given by console.
-    //  * From address private key input given by console.
-    //  * To address input given by console.
-    //  * Return hash value
-    //  */
+     /**
+     * @dev Transfer token for a specified address
+	 * @param tokenAddress The address of the token.
+     * @param senderAddress Sender's Address.
+     * @param senderPrivateKey Sender's private key.
+     * @param recieverAddress The address to transfer to.
+     * @param tokenValue The amount to be transferred.
+     */
     public function transferToken(string $contractAddress,string $senderAddress,string $senderPrivateKey,string $recieverAddress,float $tokenAmount){
         $xdc = $this->xdcConnection($contractAddress);
         $balance = $xdc->balanceOf($senderAddress);
@@ -199,21 +201,22 @@ class XRC20SDK {
         }
     }
 
-    // /**
-    //  * TransferXDC Method.
-    //  * By this method we can transfer XDC from one address to others.
-    //  * Xdc amount input given by console.
-    //  * From address input given by console.
-    //  * From address privatekey input given by console.
-    //  * To address input given by console.
-    //  * Return hash value
-    //  */
+    /**
+     * @dev Transfer XDC for a specified address.
+	 * @param tokenAddress The address of the token.
+     * @param senderAddress Sender's Address.
+     * @param senderPrivateKey sender's private key.
+	 * @param recieverAddress The address to transfer to.
+     * @param xdcValue The amount to be transferred.
+     */
     public function transferXdc(string $contractAddress,string $senderAddress,string $senderPrivateKey,string $recieverAddress,float $xdcAmount){
         $xdc = $this->xdcConnection($contractAddress);
         $transferTransaction = $xdc->transferxdc($senderAddress,$recieverAddress ,$xdcAmount);
         $transferTransactionId = $transferTransaction->sign($senderPrivateKey)->send();
         echo " $xdcAmount XDC transfered to $recieverAddress successfully.Transfer id is: $transferTransactionId \n ";
     }
+
+
   
 }
 
